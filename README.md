@@ -87,7 +87,7 @@ cat error.txt
 ## Check Output
 cat output.txt
 ```
-The returned result of simulations will be saved as csv files in "**results**" folder after all code are ran.
+The returned result of simulations will be saved as csv files in "**results**" folder after all code are ran. ***Please make sure to create a "results" folder in this working directory before running the code.***
 
 ## Coding Explanation
 Three functions are used to simulate GWAS data and run tests on them.

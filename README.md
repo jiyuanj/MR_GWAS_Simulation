@@ -3,8 +3,59 @@
 ## Background
 Mendellian Randomization(MR) nowadays is a popular tool for conducting causal inferences in epidemiological studies by using genetics variants as predictors for modifiable exposures. However, recently MR studies have came under criticisim for many perspectives, especially their violations of MR assumptions. For example, violation of exclusion restriction assumption could cause horizontal pleiotropy and make the final causal estimate be biased. In this project we are going to scrutinize the robustness of different MR estimation and test methods under different scenarios of pleiotropy. Next we are going to give a model setup of the simulation. 
 
-First are going to have trait *X* as exposure and trait *Y* as outcome. 
- 
+First are going to have *G* as genetic IVs, trait *X* as exposure and trait *Y* as outcome. Then we assume that the data generating model for subject *i*, linking genetic data on *M* uncorrelated variants $`G_{i,j}`$ where $`j \leq M`$, to their exposure $`X_i`$ and outcome $`Y_i`$ is given by 
+
+$$
+\begin{equation}
+    X_i \mid G_i = \sum_{j=1}^{M} \psi_j G_{ij} + \epsilon_{xi}
+\end{equation}
+$$
+
+$$
+\begin{align}
+    Y_i \mid X_i, G_i &= \beta X_i + \sum_{j=1}^{M} \alpha_j G_{ij} + \epsilon_{yi}
+\end{align}
+$$
+
+Since the focus of this study is on two-sample MR, thus we only consider summary level data estimates of SNP-exposure and SNP outcome associations and their standard errors are available for each of the *M* variants. So we re-write previous two models as:
+
+$$
+\begin{align}
+    X_i \mid G_{i,j} &= \psi_j G_{ij} + \epsilon_{xij}^{,} \\
+\end{align}
+$$
+
+, where $`\epsilon_{xij}^{,}=\sum_{j \neq l}^{} \gamma_l G_{il} + \epsilon_{xi}`$.
+
+$$
+\begin{align}
+    Y_i \mid G_{i,j} &= \beta \left( \psi_j G_{ij} + \epsilon_{xi}\right) + \alpha_j G_{ij} + \epsilon_{yi} + \epsilon^{,}\\
+    & = (\beta \cdot \psi_j + \alpha_j) G_{ij} + \epsilon_{yij}^{,}
+\end{align}
+$$
+
+, where $`\epsilon_{yij}^{,}= \beta \cdot \epsilon_{xij}^{,} + \sum_{j \neq l}^{} \alpha_l G_{il} + \epsilon_{yi}`$. From this two equations, it is clear to write out explicit models for SNP-exposure and SNP outcome associations from two samples for performing two-sample MR. Note: Change of notation here. 
+
+$$
+\begin{align}
+    \hat{\beta_{xj}} &= \beta_{xj} + \omega_{xj} \\
+\end{align}
+$$
+
+$$
+\begin{align}
+    \hat{\beta_{yj}} &= \gamma \cdot \beta_{xj} + \alpha_j + \omega_{yj} \\
+\end{align}
+$$
+
+Once crucial step in simulation is normalizing the $`\hat{\beta_{xj}} `$s by $`\sqrt{Var(G_i)}`$. This will make the estimates more interpretable, easier for narrow-sense $`h^2`$ computation and $`\hat{\beta_{yj}} `$s scaling, and deciding a reasonable range of values for true causal effect and pleiotropical effects. 
+
+Consider $`X_i = \sum_{j=1}^{M} \hat{\beta_{xj}} G_{ij} + \epsilon_{xi}`$. When we divide both sides of the equation by $`\sqrt{Var(G)}`$, $`G_{j}`$ is going to be normalizaed to have variance 1 and WLOG $`Var(X_i)=1`$. And $`Var(G_j)=2 f_j(1-f_j)`$, where $`f_j`$ is effect allele frequency, under HW equilibrium. After normalization, the interpretation of $`\beta_{xj}`$ becomes change in phenotype per one SD change in genotype (since WLOG SD of phenotype is 1). 
+
+Narrow sense heritability for trait *X* $`h^2(X)`$ is defined as $`\frac{V(G)}{V(X)}`$, which mean proportion of variation contributed from genotype in total variation of trait *X*. From previous equations of $`X_i = \sum_{j=1}^{M} \hat{\beta_{xj}} G_{ij} + \epsilon_{xi}`$, it can be easily seen that $`h^2(X)=\sum_{j=1}^{M} \hat{\beta_{xj}}^2`$ since $`Var(G_j)=1`$ after normalization. With same reasoning, we can easily derive that $`h^2(Y)=\sum_{j=1}^{M} (\gamma \beta_{xj} + \alpha_j)^2`$. 
+
+From simple linear regression, it can be known that $`\hat{\beta_{xj}}`$ and $`\hat{\beta_{yj}}`$ is in form: $`\frac{\sigma^2}{N \cdot Var(G)}`$, where $`\sigma^2`$ is variance of residual in the regression (assume Y is standardizec, so $`\sigma^2=1`$). Thus $`Var(\hat{\beta_{xj}})= \frac{1}{N_x}`$ and $`Var(\hat{\beta_{yj}})= \frac{1}{N_y}`$.
+
 ## Introduction
 
 This project simulates GWAS data with varying levels of pleiotropy. Specifically, we define the following parameters:
@@ -32,7 +83,7 @@ We begin by copying **461 true instruments’ effects** and corresponding standa
 
 1. **Simulated SNP effects on exposure**:  
    $`
-   \hat{\beta}_{jX} = \beta_{jX} + \mathcal{N}(0, \sigma_{jX}^2)
+   \hat{\beta}_{jX} = \frac{\beta_{jX}}{SD(G)} + \mathcal{N}(0, \sigma_{jX}^2)
    `$
 2. **Standard error of SNP effects on outcome**:  
    $`

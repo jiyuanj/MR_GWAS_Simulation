@@ -1,5 +1,10 @@
 # MR-GWAS-MR-Simulation
 
+## Background
+Mendellian Randomization(MR) nowadays is a popular tool for conducting causal inferences in epidemiological studies by using genetics variants as predictors for modifiable exposures. However, recently MR studies have came under criticisim for many perspectives, especially their violations of MR assumptions. For example, violation of exclusion restriction assumption could cause horizontal pleiotropy and make the final causal estimate be biased. In this project we are going to scrutinize the robustness of different MR estimation and test methods under different scenarios of pleiotropy. Next we are going to give a model setup of the simulation. 
+
+First are going to have trait *X* as exposure and trait *Y* as outcome. 
+ 
 ## Introduction
 
 This project simulates GWAS data with varying levels of pleiotropy. Specifically, we define the following parameters:
@@ -19,7 +24,7 @@ The simulation produces the following summary statistics:
 
 Different forms of pleiotropy $`u_j`$ are simulated to generate $`Y`$-related data. At last large scale simulation with different pleiotropy tests are conducted to check the robustness of them. 
 
-## Setup
+## Simulation Setup
 
 We begin by copying **461 true instruments’ effects** and corresponding standard errors from GWAS data on systolic blood pressure(SBP), which are $`\beta_{jX}`$ and $`\sigma_{jX}`$.
 
